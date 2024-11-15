@@ -1,9 +1,1 @@
-*.suo
-*.user
-Debug-*
-Release-*
-*.sdf
-*.opensdf
-ipch
-x64
-bin
+build

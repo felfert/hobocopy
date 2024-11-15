@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -27,14 +27,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class CIncludeAllCopyFilter : public CCopyFilter
 {
-public: 
+public:
     bool IsDirectoryMatch(LPCTSTR path)
     {
-        return true; 
+        return true;
     }
 
     bool IsFileMatch(LPCTSTR path)
     {
-        return true; 
+        return true;
     }
 };

@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -27,6 +27,6 @@ class CCopyFilter
 {
 private:
 public:
-    virtual bool IsDirectoryMatch(LPCTSTR path) = 0; 
-    virtual bool IsFileMatch(LPCTSTR path) = 0; 
+    virtual bool IsDirectoryMatch(LPCTSTR path) = 0;
+    virtual bool IsFileMatch(LPCTSTR path) = 0;
 };

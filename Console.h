@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -28,23 +28,23 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class Console
 {
 private:
-    static HANDLE s_hStdOut; 
-public: 
+    static HANDLE s_hStdOut;
+public:
     static HANDLE get_StandardOutput(void)
     {
         if (s_hStdOut == INVALID_HANDLE_VALUE)
         {
-            HANDLE hOut = ::GetStdHandle(STD_OUTPUT_HANDLE); 
+            HANDLE hOut = ::GetStdHandle(STD_OUTPUT_HANDLE);
 
             if (hOut != INVALID_HANDLE_VALUE)
             {
-                ::DuplicateHandle(::GetCurrentProcess(), 
-                    hOut, 
-                    ::GetCurrentProcess(), 
-                    &s_hStdOut, 
-                    0, 
-                    FALSE, 
-                    DUPLICATE_SAME_ACCESS); 
+                ::DuplicateHandle(::GetCurrentProcess(),
+                    hOut,
+                    ::GetCurrentProcess(),
+                    &s_hStdOut,
+                    0,
+                    FALSE,
+                    DUPLICATE_SAME_ACCESS);
             }
         }
         return s_hStdOut;
@@ -52,59 +52,59 @@ public:
 
     static TCHAR ReadChar()
     {
-        HANDLE hStdIn = ::GetStdHandle(STD_INPUT_HANDLE); 
+        HANDLE hStdIn = ::GetStdHandle(STD_INPUT_HANDLE);
 
-        TCHAR buffer[1]; 
-        DWORD charsRead; 
-        BOOL bWorked = ::ReadConsole(hStdIn, 
-            buffer, 
-            1, 
-            &charsRead, 
-            NULL); 
+        TCHAR buffer[1];
+        DWORD charsRead;
+        BOOL bWorked = ::ReadConsole(hStdIn,
+            buffer,
+            1,
+            &charsRead,
+            NULL);
 
         if (!bWorked)
         {
             DWORD error = ::GetLastError();
-            CString errorMessage; 
-            Utilities::FormatErrorMessage(error, errorMessage); 
-            CString message; 
-            message.AppendFormat(TEXT("There was an error calling ReadConsole. Error %s"), errorMessage); 
-            throw new CHoboCopyException(message); 
+            CString errorMessage;
+            Utilities::FormatErrorMessage(error, errorMessage);
+            CString message;
+            message.AppendFormat(TEXT("There was an error calling ReadConsole. Error %s"), errorMessage);
+            throw new CHoboCopyException(message);
         }
 
         if (charsRead != 1)
         {
-            throw new CHoboCopyException(TEXT("ReadConsole was unable to read a character.")); 
+            throw new CHoboCopyException(TEXT("ReadConsole was unable to read a character."));
         }
 
-        return buffer[0]; 
+        return buffer[0];
     }
 
     static void Write(LPCTSTR message)
     {
-        CString messageString(message); 
+        CString messageString(message);
 
-        LPCSTR narrowMessage = Utilities::ConvertToMultibyteString(message); 
+        LPCSTR narrowMessage = Utilities::ConvertToMultibyteString(message);
 
-        DWORD charsWritten; 
-        BOOL bWorked = ::WriteFile(get_StandardOutput(), narrowMessage, messageString.GetLength(), &charsWritten, NULL); 
+        DWORD charsWritten;
+        BOOL bWorked = ::WriteFile(get_StandardOutput(), narrowMessage, messageString.GetLength(), &charsWritten, NULL);
 
-        Utilities::Free(narrowMessage); 
+        Utilities::Free(narrowMessage);
 
         if (!bWorked)
         {
             DWORD error = ::GetLastError();
-            CString errorMessage; 
-            Utilities::FormatErrorMessage(error, errorMessage); 
-            CString message; 
-            message.AppendFormat(TEXT("Unable to write to the console. %s."), errorMessage); 
-            throw new CHoboCopyException(message);             
+            CString errorMessage;
+            Utilities::FormatErrorMessage(error, errorMessage);
+            CString message;
+            message.AppendFormat(TEXT("Unable to write to the console. %s."), errorMessage);
+            throw new CHoboCopyException(message);
         }
     }
 
     static void WriteLine(LPCTSTR message)
     {
-        Write(message); 
-        Write(TEXT("\r\n")); 
+        Write(message);
+        Write(TEXT("\r\n"));
     }
 };

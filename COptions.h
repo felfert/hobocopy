@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -26,49 +26,49 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Utilities.h"
 #include "OutputWriter.h"
 
-using namespace std; 
+using namespace std;
 
 class COptions
 {
-private: 
-    bool _acceptAll; 
-    VSS_BACKUP_TYPE _backupType; 
+private:
+    bool _acceptAll;
+    VSS_BACKUP_TYPE _backupType;
     bool _clearDestination;
-    bool _debug; 
-    CString _destination; 
-    vector<CString> _filespecs; 
+    bool _debug;
+    CString _destination;
+    vector<CString> _filespecs;
     std::wregex* _ignorePattern;
-    bool _recursive; 
-    bool _simulate; 
-    bool _skipDenied; 
-    CString _source; 
-    CString _stateFile; 
+    bool _recursive;
+    bool _simulate;
+    bool _skipDenied;
+    CString _source;
+    CString _stateFile;
     int _verbosityLevel;
 
-public: 
+public:
     bool get_AcceptAll()
     {
-        return _acceptAll; 
+        return _acceptAll;
     }
     VSS_BACKUP_TYPE get_BackupType()
     {
-        return _backupType; 
+        return _backupType;
     }
     bool get_ClearDestination()
     {
-        return _clearDestination; 
+        return _clearDestination;
     }
     bool get_Debug(void)
     {
-        return _debug; 
+        return _debug;
     }
     LPCTSTR get_Destination(void)
     {
-        return _destination.GetString(); 
+        return _destination.GetString();
     }
     vector<CString>& get_Filespecs(void)
     {
-        return _filespecs; 
+        return _filespecs;
     }
     wregex* get_IgnorePattern(void)
     {
@@ -76,23 +76,23 @@ public:
     }
     bool get_Recursive(void)
     {
-        return _recursive; 
+        return _recursive;
     }
     bool get_Simulate(void)
     {
-        return _simulate; 
+        return _simulate;
     }
     bool get_SkipDenied(void)
     {
-        return _skipDenied; 
+        return _skipDenied;
     }
     LPCTSTR get_StateFile()
     {
-        return NullIfEmpty(_stateFile); 
+        return NullIfEmpty(_stateFile);
     }
     LPCTSTR get_Source(void)
     {
-        return _source.GetString(); 
+        return _source.GetString();
     }
     static LPCTSTR get_Usage(void)
     {
@@ -151,15 +151,15 @@ public:
             TEXT("<src>        - The directory to copy (the source directory).\n")
             TEXT("<dest>       - The directory to copy to (the destination directory).\n")
             TEXT("<file>       - A file (e.g. foo.txt) or filespec (e.g. *.txt) to copy.\n")
-            TEXT("               Defaults to *.*.\n"); 
+            TEXT("               Defaults to *.*.\n");
 
         //TEXT("\n")
         //TEXT("\n")
-        ; 
+        ;
     }
     int get_VerbosityLevel(void)
     {
-        return _verbosityLevel; 
+        return _verbosityLevel;
     }
 
     static COptions Parse(int argc, _TCHAR* argv[])
@@ -167,23 +167,23 @@ public:
         COptions options;
 
         options._backupType = VSS_BT_FULL;
-        options._clearDestination = false; 
-        options._verbosityLevel = VERBOSITY_LEVEL_NORMAL; 
-        options._acceptAll = false; 
-        options._skipDenied = false; 
-        options._debug = false; 
-        options._simulate = false; 
-        options._recursive = false; 
+        options._clearDestination = false;
+        options._verbosityLevel = VERBOSITY_LEVEL_NORMAL;
+        options._acceptAll = false;
+        options._skipDenied = false;
+        options._debug = false;
+        options._simulate = false;
+        options._recursive = false;
         options._ignorePattern = NULL;
 
         if (argc < 3)
         {
-            throw new CParseOptionsException(TEXT("Wrong number of arguments.")); 
+            throw new CParseOptionsException(TEXT("Wrong number of arguments."));
         }
 
         for (int i = 1; i < argc; ++i)
         {
-            CString arg(argv[i]); 
+            CString arg(argv[i]);
             arg.MakeLower();
 
             if (Utilities::StartsWith(arg, TEXT("/")) || Utilities::StartsWith(arg, TEXT("-")))
@@ -192,23 +192,23 @@ public:
 
                 if (arg.Compare(TEXT("full")) == 0)
                 {
-                    options._backupType = VSS_BT_FULL; 
+                    options._backupType = VSS_BT_FULL;
                 }
                 else if (arg.Compare(TEXT("incremental")) == 0)
                 {
-                    options._backupType = VSS_BT_INCREMENTAL; 
+                    options._backupType = VSS_BT_INCREMENTAL;
                 }
                 else if (arg.Compare(TEXT("clear")) == 0)
                 {
-                    options._clearDestination = true; 
+                    options._clearDestination = true;
                 }
                 else if (Utilities::StartsWith(arg, TEXT("statefile=")))
                 {
-                    options._stateFile = GetArgValue(arg); 
+                    options._stateFile = GetArgValue(arg);
                 }
                 else if (Utilities::StartsWith(arg, TEXT("verbosity=")))
                 {
-                    options._verbosityLevel = _ttoi(GetArgValue(arg)); 
+                    options._verbosityLevel = _ttoi(GetArgValue(arg));
                 }
                 else if (Utilities::StartsWith(arg, TEXT("ignorepattern=")))
                 {
@@ -216,101 +216,101 @@ public:
                 }
                 else if (arg.Compare(TEXT("y")) == 0)
                 {
-                    options._acceptAll = true; 
+                    options._acceptAll = true;
                 }
                 else if (arg.Compare(TEXT("skipdenied")) == 0)
                 {
-                    options._skipDenied = true; 
+                    options._skipDenied = true;
                 }
                 else if (arg.Compare(TEXT("debug")) == 0)
                 {
-                    options._debug = true; 
+                    options._debug = true;
                 }
                 else if (arg.Compare(TEXT("simulate")) == 0)
                 {
-                    options._simulate = true; 
+                    options._simulate = true;
                 }
                 else if (arg.Compare(TEXT("recursive")) == 0 || arg.Compare(TEXT("r")) == 0)
                 {
-                    options._recursive = true; 
+                    options._recursive = true;
                 }
                 else
                 {
-                    CString message("Unrecognized switch: "); 
-                    message.Append(arg); 
-                    throw new CParseOptionsException(message); 
+                    CString message("Unrecognized switch: ");
+                    message.Append(arg);
+                    throw new CParseOptionsException(message);
                 }
             }
             else
             {
                 if (options._source.IsEmpty())
                 {
-                    options._source = argv[i]; 
+                    options._source = argv[i];
                 }
                 else if (options._destination.IsEmpty())
                 {
-                    options._destination = argv[i]; 
+                    options._destination = argv[i];
                 }
                 else
                 {
-                    options._filespecs.push_back(argv[i]); 
+                    options._filespecs.push_back(argv[i]);
                 }
             }
         }
 
         // Normalize paths to full paths
-        options._source = NormalizePath(options._source); 
-        options._destination = NormalizePath(options._destination); 
+        options._source = NormalizePath(options._source);
+        options._destination = NormalizePath(options._destination);
 
         if (!options._stateFile.IsEmpty())
         {
-            options._stateFile = NormalizePath(options._stateFile); 
+            options._stateFile = NormalizePath(options._stateFile);
         }
 
-        return options; 
+        return options;
     }
 
 private:
     static CString GetArgValue(const CString& arg)
     {
-        int index = arg.Find(L'='); 
+        int index = arg.Find(L'=');
 
         if (index == -1)
         {
-            CString message; 
-            message.Format(TEXT("Couldn't parse the option value from %s"), 
-                arg.GetString()); 
-            throw new CParseOptionsException(message.GetString()); 
+            CString message;
+            message.Format(TEXT("Couldn't parse the option value from %s"),
+                arg.GetString());
+            throw new CParseOptionsException(message.GetString());
         }
 
-        return arg.Mid(index + 1); 
+        return arg.Mid(index + 1);
     }
     static CString NormalizePath(LPCTSTR path)
     {
-        int length = MAX_PATH; 
+        int length = MAX_PATH;
         while (true)
         {
-            _TCHAR* normalizedPath = new _TCHAR[length]; 
-            LPTSTR filePart; 
+            _TCHAR* normalizedPath = new _TCHAR[length];
+            LPTSTR filePart;
             DWORD result = ::GetFullPathName(path, MAX_PATH, normalizedPath, &filePart);
 
             if (result == 0)
             {
-                DWORD error = ::GetLastError(); 
-                CString errorMessage; 
-                Utilities::FormatErrorMessage(error, errorMessage); 
-                CString message; 
-                message.AppendFormat(TEXT("Error calling GetFullPathName: %s"), errorMessage); 
-                throw new CHoboCopyException(message.GetString()); 
+                DWORD error = ::GetLastError();
+                CString errorMessage;
+                Utilities::FormatErrorMessage(error, errorMessage);
+                CString message;
+                message.AppendFormat(TEXT("Error calling GetFullPathName: %s"), errorMessage);
+                throw new CHoboCopyException(message.GetString());
             }
             else if (result > MAX_PATH)
             {
-                delete normalizedPath; 
-                length = result; 
+                delete normalizedPath;
+                length = result;
             }
             else
             {
-                return normalizedPath; 
+                return normalizedPath;
             }
         }
     }
@@ -319,15 +319,15 @@ private:
     {
         if (string.GetLength() == 0)
         {
-            return NULL; 
+            return NULL;
         }
         else
         {
-            return string.GetString(); 
+            return string.GetString();
         }
 
     }
-    static wregex* ParseRegex(const CString& userInput) 
+    static wregex* ParseRegex(const CString& userInput)
     {
 		try
 		{
@@ -335,10 +335,10 @@ private:
 		}
 		catch (regex_error err)
 		{
-			switch (err.code()) 
+			switch (err.code())
 			{
 			case regex_constants::error_badbrace:
-				ThrowRegexParseException(TEXT("The expression contained an invlid count in a { } expression"));			
+				ThrowRegexParseException(TEXT("The expression contained an invlid count in a { } expression"));
                 break;
 
 			case regex_constants::error_badrepeat:
@@ -389,20 +389,20 @@ private:
 				ThrowRegexParseException(TEXT("The expression contained an invalid back reference"));
 				break;
 
-            default:                                
-                ThrowRegexParseException(TEXT("Parse failed"));							
+            default:
+                ThrowRegexParseException(TEXT("Parse failed"));
 				break;
 			}
 		}
 
-		ThrowRegexParseException(TEXT("Parse failed"));							
-		return NULL; 
+		ThrowRegexParseException(TEXT("Parse failed"));
+		return NULL;
 
     }
-    static void ThrowRegexParseException(const TCHAR* pszDetails) 
+    static void ThrowRegexParseException(const TCHAR* pszDetails)
     {
         CString message;
         message.Format(TEXT("Couldn't parse regular expression supplied to /ignorepattern option (%s)"), pszDetails);
-        throw new CParseOptionsException(message); 
+        throw new CParseOptionsException(message);
     }
 };

@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -31,20 +31,20 @@ class CWriter
 {
 private:
     vector<CWriterComponent> _components;
-    vector<CWriterComponent> _componentTree; 
+    vector<CWriterComponent> _componentTree;
     GUID _instanceId;
-    CString _name; 
-    GUID _writerId; 
-    
+    CString _name;
+    GUID _writerId;
+
 public:
     vector<CWriterComponent>& get_Components(void)
     {
-        return _components; 
+        return _components;
     }
 
     GUID get_InstanceId(void)
     {
-        return _instanceId; 
+        return _instanceId;
     }
 
     void set_InstanceId(GUID& value)
@@ -54,12 +54,12 @@ public:
 
     CString& get_Name(void)
     {
-        return _name; 
+        return _name;
     }
 
     void set_Name(CString name)
     {
-        _name = name; 
+        _name = name;
     }
 
     GUID get_WriterId(void)
@@ -69,7 +69,7 @@ public:
 
     void set_WriterId(GUID& value)
     {
-        _writerId = value; 
+        _writerId = value;
     }
 
     void ComputeComponentTree(void)
@@ -82,14 +82,14 @@ public:
             {
                 if (iComponentParent == iComponent)
                 {
-                    continue; 
+                    continue;
                 }
 
-                CWriterComponent& potentialParent = _components[iComponentParent]; 
+                CWriterComponent& potentialParent = _components[iComponentParent];
                 if (potentialParent.IsParentOf(current))
                 {
-                    current.set_Parent(&potentialParent); 
-                    break; 
+                    current.set_Parent(&potentialParent);
+                    break;
                 }
             }
         }

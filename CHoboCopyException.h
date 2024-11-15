@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -28,14 +28,14 @@ class CHoboCopyException
 private:
     CString _message;
 
-public: 
+public:
     CHoboCopyException::CHoboCopyException(LPCTSTR message)
     {
-        _message.Append(message); 
+        _message.Append(message);
     }
 
     LPCTSTR get_Message(void)
     {
-        return _message; 
+        return _message;
     }
 };

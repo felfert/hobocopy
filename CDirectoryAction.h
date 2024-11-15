@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -26,7 +26,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class CDirectoryAction
 {
 public:
-    virtual void VisitDirectoryFinal(LPCTSTR path) = 0; 
-    virtual void VisitDirectoryInitial(LPCTSTR path) = 0; 
-    virtual void VisitFile(LPCTSTR path) = 0; 
+    virtual void VisitDirectoryFinal(LPCTSTR path) = 0;
+    virtual void VisitDirectoryInitial(LPCTSTR path) = 0;
+    virtual void VisitFile(LPCTSTR path) = 0;
 };

@@ -1,0 +1,37 @@
+<!-- vim:set sw=4 ts=4 et cin: -->
+<CPackWiXPatch>
+    <!-- Product fragments - check dependencies -->
+    <CPackWiXFragment Id="#PRODUCT">
+        <!-- Install for all users (set before any actions) -->
+        <Property Id="ALLUSERS"><![CDATA[1]]></Property>
+        <Property Id="INSTALLLEVEL" Value="100" />
+        <!-- Enable full logging -->
+        <Property Id="MsiLogging" Value="Iwearucmopvx!" />
+        <!-- Generic launch condition (check for 64-bit) -->
+        <Condition Message="This product requires a 64-bit operating system.">
+            <![CDATA[VersionNT64]]>
+        </Condition>
+        <DirectoryRef Id="TARGETDIR">
+            <!-- Create install path registry entry -->
+            <Component Id="ProdInstPathEntry">
+                <RegistryKey Root="HKLM" Key="Software\@CMAKE_PROJECT_NAME@">
+                    <RegistryValue Action="write" Name="InstallPath" Type="string"
+                                   Value="[INSTALL_ROOT]"/>
+                </RegistryKey>
+            </Component>
+            <!-- Include VCREDIST merge module -->
+            <Merge Id="VCRedist" SourceFile="@VCREDIST_MERGEMODULE@" DiskId="1" Language="0"/>
+        </DirectoryRef>
+        <Feature Id="CreateRegKeys" Title="Create reg keys" AllowAdvertise="no" Display="hidden" Level="1">
+            <ComponentRef Id="ProdInstPathEntry"/>
+        </Feature>
+        <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
+            <MergeRef Id="VCRedist"/>
+        </Feature>
+    </CPackWiXFragment>
+    <!-- Add binary directory to path -->
+    <CPackWiXFragment Id="CM_CP_@CMAKE_PROJECT_NAME@.exe">
+        <Environment Id="PATH1" Name="PATH" Value="[INSTALL_ROOT]"
+            Action="set" Permanent="no" Part="last" System="yes"/>
+    </CPackWiXFragment>
+</CPackWiXPatch>

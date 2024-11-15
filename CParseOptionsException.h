@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -25,22 +25,22 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class CParseOptionsException
 {
-private: 
-    CString _message; 
+private:
+    CString _message;
 
-public: 
+public:
     CParseOptionsException::CParseOptionsException(LPCTSTR message)
     {
-        _message = message; 
+        _message = message;
     }
 
     CParseOptionsException::CParseOptionsException(CString& message)
     {
-        _message = message.GetString(); 
+        _message = message.GetString();
     }
 
     LPCTSTR get_Message(void)
     {
-        return _message; 
+        return _message;
     }
 };

@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -28,42 +28,42 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class CModifiedSinceCopyFilter : public CCopyFilter
 {
-private: 
-    FILETIME _since; 
-	bool _skipDenied; 
+private:
+    FILETIME _since;
+	bool _skipDenied;
 
-public: 
+public:
     CModifiedSinceCopyFilter(LPSYSTEMTIME since, bool skipDenied)
     {
-		_skipDenied = skipDenied; 
-        BOOL worked = ::SystemTimeToFileTime(since, &_since);  
+		_skipDenied = skipDenied;
+        BOOL worked = ::SystemTimeToFileTime(since, &_since);
 
         if (!worked)
         {
-            DWORD error = ::GetLastError(); 
-            CString errorMessage; 
-            Utilities::FormatErrorMessage(error, errorMessage); 
-            CString message; 
-            message.AppendFormat(TEXT("SystemTimeToFileTime failed with error %s"), errorMessage); 
-            throw new CHoboCopyException(message); 
+            DWORD error = ::GetLastError();
+            CString errorMessage;
+            Utilities::FormatErrorMessage(error, errorMessage);
+            CString message;
+            message.AppendFormat(TEXT("SystemTimeToFileTime failed with error %s"), errorMessage);
+            throw new CHoboCopyException(message);
         }
     }
 
     bool IsDirectoryMatch(LPCTSTR path)
     {
-        return true; 
+        return true;
     }
-    
+
     bool IsFileMatch(LPCTSTR path)
     {
         HANDLE hFile = ::CreateFile(
-            path, 
+            path,
             GENERIC_READ,
-            FILE_SHARE_READ | FILE_SHARE_WRITE, 
-            NULL, 
-            OPEN_EXISTING, 
-            FILE_ATTRIBUTE_NORMAL, 
-            NULL); 
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
+            NULL,
+            OPEN_EXISTING,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL);
 
         if (hFile == INVALID_HANDLE_VALUE)
         {
@@ -71,40 +71,40 @@ public:
 
 			if (error == 5 && _skipDenied)
 			{
-				return false; 
+				return false;
 			}
 
-            CString errorMessage; 
-            Utilities::FormatErrorMessage(error, errorMessage); 
-            CString message; 
+            CString errorMessage;
+            Utilities::FormatErrorMessage(error, errorMessage);
+            CString message;
             message.AppendFormat(TEXT("Unable to open file %s exists. Error %s."), path, errorMessage);
-            throw new CHoboCopyException(message); 
+            throw new CHoboCopyException(message);
         }
 
-        FILETIME modified; 
-        BOOL worked = ::GetFileTime(hFile, NULL, NULL, &modified); 
+        FILETIME modified;
+        BOOL worked = ::GetFileTime(hFile, NULL, NULL, &modified);
 
         if (!worked)
         {
-            DWORD error = ::GetLastError(); 
+            DWORD error = ::GetLastError();
 
 			if (error == 5 && _skipDenied)
 			{
-				::CloseHandle(hFile); 
-				return false; 
+				::CloseHandle(hFile);
+				return false;
 			}
 
-            CString errorMessage; 
-            Utilities::FormatErrorMessage(error, errorMessage); 
-            CString message; 
-            message.AppendFormat(TEXT("Unable to retrieve file time from file %s. Error %s."), path, errorMessage); 
-            ::CloseHandle(hFile); 
-            throw new CHoboCopyException(message); 
+            CString errorMessage;
+            Utilities::FormatErrorMessage(error, errorMessage);
+            CString message;
+            message.AppendFormat(TEXT("Unable to retrieve file time from file %s. Error %s."), path, errorMessage);
+            ::CloseHandle(hFile);
+            throw new CHoboCopyException(message);
         }
 
-        ::CloseHandle(hFile); 
+        ::CloseHandle(hFile);
 
-        int comparison = ::CompareFileTime(&_since, &modified); 
+        int comparison = ::CompareFileTime(&_since, &modified);
 
         if (comparison == -1)
         {
@@ -112,7 +112,7 @@ public:
         }
         else
         {
-            return false; 
+            return false;
         }
     }
 };

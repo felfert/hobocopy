@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -29,40 +29,40 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class CDeleteAction : public CDirectoryAction
 {
 private:
-    LPCTSTR _target; 
+    LPCTSTR _target;
 
-public: 
+public:
     CDeleteAction::CDeleteAction(LPCTSTR target)
     {
-        _target = target; 
+        _target = target;
     }
 
     void VisitDirectoryFinal(LPCTSTR path)
     {
         CString fullPath;
         Utilities::CombinePath(_target, path, fullPath);
-        Utilities::FixLongFilenames(fullPath); 
+        Utilities::FixLongFilenames(fullPath);
 
-        BOOL bWorked = ::RemoveDirectory(fullPath); 
+        BOOL bWorked = ::RemoveDirectory(fullPath);
 
         if (!bWorked)
         {
-            DWORD error = ::GetLastError(); 
+            DWORD error = ::GetLastError();
 
-            CString errorMessage; 
-            Utilities::FormatErrorMessage(error, errorMessage); 
-            CString message; 
-            message.AppendFormat(TEXT("Error %s calling RemoveDirectory on %s"), errorMessage, fullPath); 
-            throw new CHoboCopyException(message); 
+            CString errorMessage;
+            Utilities::FormatErrorMessage(error, errorMessage);
+            CString message;
+            message.AppendFormat(TEXT("Error %s calling RemoveDirectory on %s"), errorMessage, fullPath);
+            throw new CHoboCopyException(message);
         }
         else
         {
-            CString message; 
-            message.AppendFormat(TEXT("Deleted directory %s"), fullPath); 
-            OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_NORMAL); 
+            CString message;
+            message.AppendFormat(TEXT("Deleted directory %s"), fullPath);
+            OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_NORMAL);
         }
     }
-  
+
     void VisitDirectoryInitial(LPCTSTR path)
     {
         // Do nothing
@@ -73,64 +73,64 @@ public:
         CString fullPath;
         Utilities::CombinePath(_target, path, fullPath);
 
-        Utilities::FixLongFilenames(fullPath); 
+        Utilities::FixLongFilenames(fullPath);
 
-        BOOL bWorked = ::DeleteFile(fullPath); 
+        BOOL bWorked = ::DeleteFile(fullPath);
 
         if (!bWorked)
         {
-            DWORD error = ::GetLastError(); 
+            DWORD error = ::GetLastError();
 
             // Maybe it's read-only
             if (error == 5)
             {
-                CString message; 
-                message.AppendFormat(TEXT("Permission denied when deleting file %s. Resetting read-only bit and retrying."), 
-                    fullPath); 
-                OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_IF_VERBOSE); 
+                CString message;
+                message.AppendFormat(TEXT("Permission denied when deleting file %s. Resetting read-only bit and retrying."),
+                    fullPath);
+                OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_IF_VERBOSE);
 
-                DWORD attributes = ::GetFileAttributes(fullPath); 
+                DWORD attributes = ::GetFileAttributes(fullPath);
 
                 if (attributes == INVALID_FILE_ATTRIBUTES)
                 {
                     CString message;
-                    message.AppendFormat(TEXT("Failed to retrieve attributes for file %s."), fullPath); 
-                    throw new CHoboCopyException(message); 
+                    message.AppendFormat(TEXT("Failed to retrieve attributes for file %s."), fullPath);
+                    throw new CHoboCopyException(message);
                 }
 
-                attributes &= ~FILE_ATTRIBUTE_READONLY; 
+                attributes &= ~FILE_ATTRIBUTE_READONLY;
 
-                bWorked = ::SetFileAttributes(fullPath, attributes); 
+                bWorked = ::SetFileAttributes(fullPath, attributes);
 
                 if (!bWorked)
                 {
                     CString message;
-                    message.AppendFormat(TEXT("Failed to clear read-only bit on %s"), fullPath); 
-                    throw new CHoboCopyException(message); 
+                    message.AppendFormat(TEXT("Failed to clear read-only bit on %s"), fullPath);
+                    throw new CHoboCopyException(message);
                 }
 
-                bWorked = ::DeleteFile(fullPath); 
+                bWorked = ::DeleteFile(fullPath);
                 if (!bWorked)
                 {
-                    error = ::GetLastError(); 
+                    error = ::GetLastError();
                 }
             }
 
             if (!bWorked)
             {
-                CString errorMessage; 
-                Utilities::FormatErrorMessage(error, errorMessage); 
-                CString message; 
-                message.AppendFormat(TEXT("Error %s calling DeleteFile on %s"), errorMessage, path); 
-                throw new CHoboCopyException(message); 
+                CString errorMessage;
+                Utilities::FormatErrorMessage(error, errorMessage);
+                CString message;
+                message.AppendFormat(TEXT("Error %s calling DeleteFile on %s"), errorMessage, path);
+                throw new CHoboCopyException(message);
             }
         }
 
         if (bWorked)
         {
-            CString message; 
-            message.AppendFormat(TEXT("Successfully deleted file %s."), fullPath); 
-            OutputWriter::WriteLine(message); 
+            CString message;
+            message.AppendFormat(TEXT("Successfully deleted file %s."), fullPath);
+            OutputWriter::WriteLine(message);
         }
     }
 

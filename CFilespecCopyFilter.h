@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (c) 2011 Wangdera Corporation (hobocopy@wangdera.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -23,12 +23,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-using namespace std; 
+using namespace std;
 
 class CFilespecCopyFilter : public CCopyFilter
 {
 private:
-    vector<CString>& _filespecs; 
+    vector<CString>& _filespecs;
 
 public:
     CFilespecCopyFilter::CFilespecCopyFilter(vector<CString>& filespecs) : _filespecs(filespecs)
@@ -37,27 +37,27 @@ public:
 
     bool IsDirectoryMatch(LPCTSTR path)
     {
-        return true; 
+        return true;
     }
     bool IsFileMatch(LPCTSTR path)
     {
         // No filespecs means "match everything"
         if (_filespecs.size() == 0)
         {
-            return true; 
+            return true;
         }
 
-        CString filename; 
-        Utilities::GetFileName(CString(path), filename); 
+        CString filename;
+        Utilities::GetFileName(CString(path), filename);
 
         for (unsigned int iFilespec = 0; iFilespec < _filespecs.size(); ++iFilespec)
         {
             if (Utilities::IsMatch(filename, _filespecs[iFilespec]))
             {
-                return true; 
+                return true;
             }
         }
 
-        return false; 
+        return false;
     }
 };

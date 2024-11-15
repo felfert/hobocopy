@@ -1,8 +1,11 @@
 # STATUS
 
-Hobocopy is no longer under active development. As far as I know, it still works, but even I don't use it any more. Instead, I use a tool I wrote called [Shadowspawn](https://github.com/candera/shadowspawn) plus something like robocopy or rsync. I consider Shadowspawn the replacement for hobocopy.
+This fork has been cleaned up (Microsoft link-libs/includes removed).
+Furthermore, the build system was changed to cmake and an MSI installer was added.
+The installer automatically installs the necessary vcredist (runtime libraries) if
+not yet available on the target system. It also adds the install directory to the system path.
 
-You are welcome to download hobocopy and use it, and I still try to answer questions, but I won't be releasing new versions. You are welcome to fork the project - the license (MIT) is very permissive.
+For the original status of this project, see the README.md in original project.
 
 # WHAT IS HOBOCOPY? 
 
@@ -15,10 +18,8 @@ before copying. It then copies from the snapshot rather than the "live" disk.
    
 # INSTALLING HOBOCOPY
 
-Most users can simply unzip the file containing hobocopy.exe into the directory 
-of your choice. However, HoboCopy uses the Visual C++ 8.0 runtime, which may
-not be present on some machines. If HoboCopy does not work for you, run the 
-vcredist executable available from the same location you downloaded HoboCopy. 
+Simply doubleclick the msi. After that, you should logoff/logon in order to get your system path
+refreshed.
    
 # WHY DOES HOBCOPY USE THE VOLUME SHADOW SERVICE?    
    
