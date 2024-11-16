@@ -51,21 +51,30 @@ add_executable("${CMAKE_PROJECT_NAME}"
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" vss_uuid.lib vssapi.lib msxml2.lib)
 set_property(TARGET "${CMAKE_PROJECT_NAME}" APPEND_STRING PROPERTY LINK_FLAGS
-    " /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
+    " /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\" /SUBSYSTEM:CONSOLE")
 install(TARGETS "${CMAKE_PROJECT_NAME}"
-                PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
-                GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-                DESTINATION /)
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+    DESTINATION /)
+install(FILES $<TARGET_PDB_FILE:${CMAKE_PROJECT_NAME}> OPTIONAL DESTINATION /)
 
 # MSVC redistributables taken from VisualStudio installation
-# The variable VCToolsRedistDir is set by vcvars.bat
-file(TO_CMAKE_PATH "$ENV{VCToolsRedistDir}" _TMP1)
-file(GLOB _TMP2 "${_TMP1}/MergeModules/*_CRT_x64.msm")
-file(TO_NATIVE_PATH "${_TMP2}" VCREDIST_MERGEMODULE)
-file(GLOB _TMP2 "${_TMP1}/MergeModules/*_DebugCRT_x64.msm")
-file(TO_NATIVE_PATH "${_TMP2}" VCREDIST_MERGEMODULE_DEBUG)
+# Since we build an MSI installer, we use the msm instead of
+# the actual dlls
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP ON)
+include(InstallRequiredSystemLibraries)
+list(POP_FRONT CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS _tmp)
+string(REGEX REPLACE "^(.*Redist)/.*$" "\\1" _rdir "${_tmp}")
+file(GLOB_RECURSE _msm "${_rdir}/*_CRT_x64.msm")
+list(POP_FRONT _msm _tmp)
+message(STATUS "MSM used for release: ${_tmp}")
+file(TO_NATIVE_PATH "${_tmp}" VCREDIST_MERGEMODULE)
+file(GLOB_RECURSE _msm "${_rdir}/*_DebugCRT_x64.msm")
+list(POP_FRONT _msm _tmp)
+message(STATUS "MSM used for debuging: ${_tmp}")
+file(TO_NATIVE_PATH "${_tmp}" VCREDIST_MERGEMODULE_DEBUG)
 
 configure_file("${CMAKE_SOURCE_DIR}/msi.xml.in"
-                   "${CMAKE_BINARY_DIR}/msi.xml" @ONLY)
+    "${CMAKE_BINARY_DIR}/msi.xml" @ONLY)
 
 include(CPack)
