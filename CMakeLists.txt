@@ -1,21 +1,17 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-project(HoboCopy VERSION "2.0.0.0") 
+project(HoboCopy VERSION "2.0.0.0")
 if (NOT WIN32)
     MESSAGE(FATAL_ERROR "This can be build on Windows only")
 endif()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
 set(CPACK_PACKAGE_VERSION "${CMAKE_PROJECT_VERSION}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CMAKE_PROJECT_NAME}")
-#set(CPACK_COMPONENTS_ALL main)
-#set(CPACK_COMPONENT_MAIN_GROUP "")
-#set(CPACK_COMPONENT_MAIN_HIDDEN True)
-#set(CPACK_COMPONENT_MAIN_REQUIRED True)
 set(CPACK_GENERATOR "WIX")
 set(CPACK_WIX_VERSION 3)
 set(CPACK_WIX_UPGRADE_GUID "59e22abc-82b6-48f6-98cf-c021257f3b02")
 set(CPACK_WIX_PATCH_FILE "${CMAKE_BINARY_DIR}/msi.xml")
-#set(CPACK_WIX_COMPONENT_INSTALL OFF)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/license.txt")
 
 add_compile_options(/W4 /EHsc /diagnostics:caret)
@@ -25,7 +21,15 @@ add_compile_options(/wd4251) # memberOfxyz needs to have dll-interface to be use
 add_compile_options(/wd4275) # non dll-interface class 'foo' used as base for dll-interface class 'bar'
 add_compile_options(/wd4127) # MicrosoftBS-BS :-) (constexpr in conditionals is C++17 and we don't use that yet)
 
-add_definitions("-D_UNICODE" "-DUNICODE")
+string(REPLACE "." "," PROJECT_VERSION_CS "${CMAKE_PROJECT_VERSION}")
+add_definitions("-D_UNICODE" "-DUNICODE" "-DPROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
+
+# Create RC file
+include(Buildtag)
+generate_buildtag(PROJECT_BUILDTAG)
+message(STATUS "Buildtag: ${PROJECT_BUILDTAG}")
+set(PROJECT_OWNER "hobocopy@fritz-elfert.de")
+configure_file("${CMAKE_SOURCE_DIR}/HoboCopy.rc.in" "${CMAKE_BINARY_DIR}/HoboCopy.rc" @ONLY)
 
 add_executable("${CMAKE_PROJECT_NAME}"
     CBackupState.cpp
@@ -47,6 +51,7 @@ add_executable("${CMAKE_PROJECT_NAME}"
     OutputWriter.cpp
     stdafx.cpp
     Utilities.cpp
+    "${CMAKE_BINARY_DIR}/HoboCopy.rc"
 )
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" vss_uuid.lib vssapi.lib msxml2.lib)
