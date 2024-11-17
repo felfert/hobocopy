@@ -1,0 +1,35 @@
+name: Publish
+
+on:
+  workflow_call:
+    inputs:
+      artifact-id:
+        required: true
+        type: string
+  workflow_dispatch:
+ 
+jobs:
+  publish-github:
+    if: ${{ github.ref_type == 'tag' && github.event_name != 'workflow_dispatch' }}
+    name: Publish to GitHub
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fetch artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.artifact-id }}
+    - name: Calculate checksums
+      shell: bash
+      run: |
+        for msi in build/*.msi ; do
+          sha256sum ${msi} > $(basename ${msi} .msi).sha256
+          mv
+        done
+    - name: Release assets
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          *.msi
+          *.sha256
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

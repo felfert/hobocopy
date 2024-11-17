@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
-project(HoboCopy VERSION "1.0.0.0") 
+project(HoboCopy VERSION "2.0.0.0") 
 if (NOT WIN32)
     MESSAGE(FATAL_ERROR "This can be build on Windows only")
 endif()
