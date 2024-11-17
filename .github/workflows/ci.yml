@@ -26,8 +26,9 @@ jobs:
         run: cmake -B build -G "Visual Studio 16 2019"
       - name: Build and package msi with cmake
         run: |
-          echo "${GITHUB_REF}" > build/github-ref
-          echo "${GITHUB_SHA}" > build/commithash
+          # Since we run on windows, use powershell syntax
+          echo "$($env:GITHUB_REF)" > build/github-ref
+          echo "$($env:GITHUB_SHA)" > build/commithash
           cmake --build build --config RelWithDebInfo --target PACKAGE
       - name: Save artifacts
         if: always()
