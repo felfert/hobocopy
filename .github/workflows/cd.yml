@@ -21,12 +21,11 @@ jobs:
     - name: Calculate checksums
       shell: bash
       run: |
-        for msi in build/*.msi ; do
-          sha256sum ${msi} > $(basename ${msi} .msi).sha256
-          mv
+        for msi in *.msi ; do
+          sha256sum ${msi} > ${msi}.sha256
         done
     - name: Release assets
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: |
           *.msi
