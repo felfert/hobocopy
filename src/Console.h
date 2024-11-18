@@ -68,7 +68,8 @@ public:
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
-            message.AppendFormat(TEXT("There was an error calling ReadConsole. Error %s"), errorMessage);
+            message.AppendFormat(TEXT("There was an error calling ReadConsole. Error %s"),
+                    static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message);
         }
 
@@ -96,9 +97,9 @@ public:
             DWORD error = ::GetLastError();
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
-            CString message;
-            message.AppendFormat(TEXT("Unable to write to the console. %s."), errorMessage);
-            throw new CHoboCopyException(message);
+            CString fmsg;
+            fmsg.AppendFormat(TEXT("Unable to write to the console. %s."), static_cast<LPCTSTR>(errorMessage));
+            throw new CHoboCopyException(fmsg);
         }
     }
 

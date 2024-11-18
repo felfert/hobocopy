@@ -44,7 +44,8 @@ public:
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
-            message.AppendFormat(TEXT("SystemTimeToFileTime failed with error %s"), errorMessage);
+            message.AppendFormat(TEXT("SystemTimeToFileTime failed with error %s"),
+                    static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message);
         }
     }
@@ -77,7 +78,8 @@ public:
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
-            message.AppendFormat(TEXT("Unable to open file %s exists. Error %s."), path, errorMessage);
+            message.AppendFormat(TEXT("Unable to open file %s exists. Error %s."), path,
+                    static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message);
         }
 
@@ -97,7 +99,8 @@ public:
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
-            message.AppendFormat(TEXT("Unable to retrieve file time from file %s. Error %s."), path, errorMessage);
+            message.AppendFormat(TEXT("Unable to retrieve file time from file %s. Error %s."), path,
+                    static_cast<LPCTSTR>(errorMessage));
             ::CloseHandle(hFile);
             throw new CHoboCopyException(message);
         }

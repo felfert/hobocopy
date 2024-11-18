@@ -119,23 +119,24 @@ int _tmain(int argc, _TCHAR* argv[])
         {
             if (!Utilities::DirectoryExists(options.get_Destination()))
             {
-                CString message;
-                message.AppendFormat(TEXT("Skipping recursive delete of destination directory %s because it appears not to exist."),
+                CString fmsg;
+                fmsg.AppendFormat(
+                    TEXT("Skipping recursive delete of destination directory %s because it appears not to exist."),
                     options.get_Destination());
-                OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_NORMAL);
+                OutputWriter::WriteLine(fmsg, VERBOSITY_THRESHOLD_NORMAL);
             }
             else
             {
-                CString message;
-                message.AppendFormat(TEXT("Recursively deleting destination directory %s."),
+                CString fmsg;
+                fmsg.AppendFormat(TEXT("Recursively deleting destination directory %s."),
                     options.get_Destination());
-                OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_NORMAL);
+                OutputWriter::WriteLine(fmsg, VERBOSITY_THRESHOLD_NORMAL);
 
                 bool doDelete = options.get_AcceptAll();
 
                 if (!doDelete)
                 {
-                    if (Confirm(message))
+                    if (Confirm(fmsg))
                     {
                         doDelete = true;
                     }
@@ -155,7 +156,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
         CBackupState backupState;
 
-        LPSYSTEMTIME lastBackupTime;
+        LPSYSTEMTIME lastBackupTime = NULL;
 
         if (options.get_BackupType() == VSS_BT_INCREMENTAL)
         {
@@ -226,18 +227,18 @@ int _tmain(int argc, _TCHAR* argv[])
             writer.set_WriterId(idWriter);
 
             CComBSTR writerName(bstrWriterName);
-            CString message;
-            message.AppendFormat(TEXT("Writer %d named %s"), iWriter, (LPCTSTR) writerName);
-            OutputWriter::WriteLine(message);
+            CString fmsg;
+            fmsg.AppendFormat(TEXT("Writer %d named %s"), iWriter, (LPCTSTR) writerName);
+            OutputWriter::WriteLine(fmsg);
 
             UINT cIncludeFiles;
             UINT cExcludeFiles;
             UINT cComponents;
             CHECK_HRESULT(pExamineWriterMetadata->GetFileCounts(&cIncludeFiles, &cExcludeFiles, &cComponents));
 
-            message.Empty();
-            message.AppendFormat(TEXT("Writer has %d components"), cComponents);
-            OutputWriter::WriteLine(message);
+            fmsg.Empty();
+            fmsg.AppendFormat(TEXT("Writer has %d components"), cComponents);
+            OutputWriter::WriteLine(fmsg);
 
             for (UINT iComponent = 0; iComponent < cComponents; ++iComponent)
             {
@@ -249,8 +250,8 @@ int _tmain(int argc, _TCHAR* argv[])
                 PVSSCOMPONENTINFO pComponentInfo;
                 CHECK_HRESULT(pComponent->GetComponentInfo(&pComponentInfo));
 
-                CString message;
-                message.AppendFormat(TEXT("Component %d is named %s, has a path of %s, and is %sselectable for backup. %d files, %d databases, %d log files."),
+                CString fmsg0;
+                fmsg0.AppendFormat(TEXT("Component %d is named %s, has a path of %s, and is %sselectable for backup. %d files, %d databases, %d log files."),
                     iComponent,
                     pComponentInfo->bstrComponentName,
                     pComponentInfo->bstrLogicalPath,
@@ -258,7 +259,7 @@ int _tmain(int argc, _TCHAR* argv[])
                     pComponentInfo->cFileCount,
                     pComponentInfo->cDatabases,
                     pComponentInfo->cLogFiles);
-                OutputWriter::WriteLine(message);
+                OutputWriter::WriteLine(fmsg0);
 
                 component.set_LogicalPath(pComponentInfo->bstrLogicalPath);
                 component.set_SelectableForBackup(pComponentInfo->bSelectable);
@@ -277,9 +278,10 @@ int _tmain(int argc, _TCHAR* argv[])
                     CComBSTR bstrFileSpec;
                     CHECK_HRESULT(pFileDesc->GetFilespec(&bstrFileSpec));
 
-                    CString message;
-                    message.AppendFormat(TEXT("File %d has path %s\\%s"), iFile, bstrPath, bstrFileSpec);
-                    OutputWriter::WriteLine(message);
+                    CString fmsg1;
+                    fmsg1.AppendFormat(TEXT("File %d has path %s\\%s"), iFile,
+                            static_cast<LPCWSTR>(bstrPath), static_cast<LPCWSTR>(bstrFileSpec));
+                    OutputWriter::WriteLine(fmsg1);
                 }
 
                 for (UINT iDatabase = 0; iDatabase < pComponentInfo->cDatabases; ++iDatabase)
@@ -293,9 +295,10 @@ int _tmain(int argc, _TCHAR* argv[])
                     CComBSTR bstrFileSpec;
                     CHECK_HRESULT(pFileDesc->GetFilespec(&bstrFileSpec));
 
-                    CString message;
-                    message.AppendFormat(TEXT("Database file %d has path %s\\%s"), iDatabase, bstrPath, bstrFileSpec);
-                    OutputWriter::WriteLine(message);
+                    CString fmsg1;
+                    fmsg1.AppendFormat(TEXT("Database file %d has path %s\\%s"), iDatabase,
+                            static_cast<LPCWSTR>(bstrPath), static_cast<LPCWSTR>(bstrFileSpec));
+                    OutputWriter::WriteLine(fmsg1);
                 }
 
                 for (UINT iDatabaseLogFile = 0; iDatabaseLogFile < pComponentInfo->cLogFiles; ++iDatabaseLogFile)
@@ -309,9 +312,10 @@ int _tmain(int argc, _TCHAR* argv[])
                     CComBSTR bstrFileSpec;
                     CHECK_HRESULT(pFileDesc->GetFilespec(&bstrFileSpec));
 
-                    CString message;
-                    message.AppendFormat(TEXT("Database log file %d has path %s\\%s"), iDatabaseLogFile, bstrPath, bstrFileSpec);
-                    OutputWriter::WriteLine(message);
+                    CString fmsg1;
+                    fmsg1.AppendFormat(TEXT("Database log file %d has path %s\\%s"), iDatabaseLogFile,
+                            static_cast<LPCWSTR>(bstrPath), static_cast<LPCWSTR>(bstrFileSpec));
+                    OutputWriter::WriteLine(fmsg1);
                 }
 
                 CHECK_HRESULT(pComponent->FreeComponentInfo(pComponentInfo));
@@ -325,14 +329,15 @@ int _tmain(int argc, _TCHAR* argv[])
             for (unsigned int iComponent = 0; iComponent < writer.get_Components().size(); ++iComponent)
             {
                 CWriterComponent& component = writer.get_Components()[iComponent];
-                CString message;
-                message.AppendFormat(TEXT("Component %d has name %s, path %s, is %sselectable for backup, and has parent %s"),
+                CString fmsg0;
+                fmsg0.AppendFormat(TEXT("Component %d has name %s, path %s, is %sselectable for backup, and has parent %s"),
                     iComponent,
-                    component.get_Name(),
-                    component.get_LogicalPath(),
+                    static_cast<LPCTSTR>(component.get_Name()),
+                    static_cast<LPCTSTR>(component.get_LogicalPath()),
                     component.get_SelectableForBackup() ? TEXT("") : TEXT("not "),
-                    component.get_Parent() == NULL ? TEXT("(no parent)") : component.get_Parent()->get_Name());
-                OutputWriter::WriteLine(message);
+                    component.get_Parent() == NULL ?  TEXT("(no parent)")
+                        : static_cast<LPCTSTR>(component.get_Parent()->get_Name()));
+                OutputWriter::WriteLine(fmsg0);
             }
 
             writers.push_back(writer);
@@ -350,10 +355,10 @@ int _tmain(int argc, _TCHAR* argv[])
             DWORD error = ::GetLastError();
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
-            CString message;
-            message.AppendFormat(TEXT("There was an error retrieving the volume name from the path. Path: %s Error: %s"),
-                options.get_Source(), errorMessage);
-            throw new CHoboCopyException(message.GetString());
+            CString fmsg0;
+            fmsg0.AppendFormat(TEXT("There was an error retrieving the volume name from the path. Path: %s Error: %s"),
+                options.get_Source(), static_cast<LPCTSTR>(errorMessage));
+            throw new CHoboCopyException(fmsg0.GetString());
         }
 
         OutputWriter::WriteLine(TEXT("Calling AddToSnapshotSet"));
@@ -364,21 +369,22 @@ int _tmain(int argc, _TCHAR* argv[])
         {
             CWriter writer = writers[iWriter];
 
-            CString message;
-            message.AppendFormat(TEXT("Adding components to snapshot set for writer %s"), writer.get_Name());
-            OutputWriter::WriteLine(message);
+            CString fmsg0;
+            fmsg0.AppendFormat(TEXT("Adding components to snapshot set for writer %s"),
+                    static_cast<LPCTSTR>(writer.get_Name()));
+            OutputWriter::WriteLine(fmsg0);
             for (unsigned int iComponent = 0; iComponent < writer.get_Components().size(); ++iComponent)
             {
                 CWriterComponent component = writer.get_Components()[iComponent];
 
                 if (ShouldAddComponent(component))
                 {
-                    CString message;
-                    message.AppendFormat(TEXT("Adding component %s (%s) from writer %s"),
-                        component.get_Name(),
-                        component.get_LogicalPath(),
-                        writer.get_Name());
-                    OutputWriter::WriteLine(message);
+                    CString fmsg;
+                    fmsg.AppendFormat(TEXT("Adding component %s (%s) from writer %s"),
+                        static_cast<LPCTSTR>(component.get_Name()),
+                        static_cast<LPCTSTR>(component.get_LogicalPath()),
+                        static_cast<LPCTSTR>(writer.get_Name()));
+                    OutputWriter::WriteLine(fmsg);
                     CHECK_HRESULT(pBackupComponents->AddComponent(
                         writer.get_InstanceId(),
                         writer.get_WriterId(),
@@ -389,10 +395,10 @@ int _tmain(int argc, _TCHAR* argv[])
                 }
                 else
                 {
-                    CString message;
-                    message.AppendFormat(TEXT("Not adding component %s from writer %s."),
-                        component.get_Name(), writer.get_Name());
-                    OutputWriter::WriteLine(message);
+                    CString fmsg;
+                    fmsg.AppendFormat(TEXT("Not adding component %s from writer %s."),
+                        static_cast<LPCTSTR>(component.get_Name()), static_cast<LPCTSTR>(writer.get_Name()));
+                    OutputWriter::WriteLine(fmsg);
                 }
             }
         }
@@ -561,7 +567,7 @@ int _tmain(int argc, _TCHAR* argv[])
         CString file;
         e->get_File(file);
         message.Format(TEXT("There was a COM failure 0x%x - %s (%d)"),
-            e->get_Hresult(), file, e->get_Line());
+            e->get_Hresult(), static_cast<LPCTSTR>(file), e->get_Line());
         OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_UNLESS_SILENT);
         return 1;
     }
@@ -592,7 +598,7 @@ int _tmain(int argc, _TCHAR* argv[])
     ::GetSystemTime(&finishTime);
     Utilities::FormatDateTime(&finishTime, TEXT(" "), true, finishTimeString);
     message.AppendFormat(TEXT("Backup started at %s, completed at %s."),
-        startTimeStringLocal, finishTimeString);
+        static_cast<LPCTSTR>(startTimeStringLocal), static_cast<LPCTSTR>(finishTimeString));
     OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_NORMAL);
     message.Empty();
 
@@ -774,7 +780,7 @@ void ProcessDirectory(LPCTSTR srcbase, CDirectoryAction& action, LPCTSTR directo
 					Utilities::FormatErrorMessage(error, errorMessage);
 					CString message;
 					message.AppendFormat(TEXT("There was an error calling FindNextFile. Path: %s Error: %s"),
-						pattern, errorMessage);
+						static_cast<LPCTSTR>(pattern), static_cast<LPCTSTR>(errorMessage));
 					throw new CHoboCopyException(message.GetString());
 				}
 			}
@@ -790,7 +796,7 @@ void ProcessDirectory(LPCTSTR srcbase, CDirectoryAction& action, LPCTSTR directo
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
             message.AppendFormat(TEXT("There was an error calling FindFirstFile. Path: %s Error: %s"),
-                pattern, errorMessage);
+                static_cast<LPCTSTR>(pattern), static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message.GetString());
 		}
 	}
@@ -835,7 +841,7 @@ bool ShouldProcess(wregex* ignorePattern, const CString& path)
 	if (ignore)
     {
 		CString message;
-		message.Format(TEXT("Ignoring %s"), path);
+		message.Format(TEXT("Ignoring %s"), static_cast<LPCTSTR>(path));
 		OutputWriter::WriteLine(message);
 	}
 	return !ignore;

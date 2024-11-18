@@ -48,7 +48,8 @@ public:
         }
 
         CString filename;
-        Utilities::GetFileName(CString(path), filename);
+        CString lpath(path);
+        Utilities::GetFileName(lpath, filename);
 
         for (unsigned int iFilespec = 0; iFilespec < _filespecs.size(); ++iFilespec)
         {

@@ -300,7 +300,7 @@ private:
                 CString errorMessage;
                 Utilities::FormatErrorMessage(error, errorMessage);
                 CString message;
-                message.AppendFormat(TEXT("Error calling GetFullPathName: %s"), errorMessage);
+                message.AppendFormat(TEXT("Error calling GetFullPathName: %s"), static_cast<LPCTSTR>(errorMessage));
                 throw new CHoboCopyException(message.GetString());
             }
             else if (result > MAX_PATH)

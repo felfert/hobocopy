@@ -122,7 +122,10 @@ public:
                     CString errorMessage;
                     FormatErrorMessage(error, errorMessage);
                     CString message;
-                    message.AppendFormat(TEXT("Failure creating directory %s (as %s) - %s"), pathToCreate, fixedPath, errorMessage);
+                    message.AppendFormat(TEXT("Failure creating directory %s (as %s) - %s"),
+                            static_cast<LPCTSTR>(pathToCreate),
+                            static_cast<LPCTSTR>(fixedPath),
+                            static_cast<LPCTSTR>(errorMessage));
                     throw new CHoboCopyException(message);
                 }
             }
@@ -149,7 +152,7 @@ public:
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
             message.AppendFormat(TEXT("Unable to determine if directory %s (as %s) exists. Error was %s."),
-                directory, fixedPath, errorMessage);
+                directory, static_cast<LPCTSTR>(fixedPath), static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message);
         }
 
@@ -212,7 +215,7 @@ public:
                 Utilities::FormatErrorMessage(error, errorMessage);
                 CString message;
                 message.AppendFormat(TEXT("Unable to convert UTC time to local time. Error was %s."),
-                    errorMessage);
+                    static_cast<LPCTSTR>(errorMessage));
                 throw new CHoboCopyException(message);
             }
         }
@@ -244,7 +247,8 @@ public:
                 CString errorMessage;
                 Utilities::FormatErrorMessage(error, errorMessage);
                 output.Empty();
-                output.AppendFormat(TEXT("Unable to retrieve time. Error was %s."), errorMessage);
+                output.AppendFormat(TEXT("Unable to retrieve time. Error was %s."),
+                        static_cast<LPCTSTR>(errorMessage));
             }
         }
         else
@@ -253,7 +257,7 @@ public:
             CString errorMessage;
             Utilities::FormatErrorMessage(error, errorMessage);
             output.Empty();
-            output.AppendFormat(TEXT("Unable to retrieve date. Error was %s."), errorMessage);
+            output.AppendFormat(TEXT("Unable to retrieve date. Error was %s."), static_cast<LPCTSTR>(errorMessage));
         }
 
 
@@ -282,7 +286,7 @@ public:
 
             ::LocalFree(lpMsgBuf);
 
-            output.Format(TEXT("%s (Error number %d)"), message, error);
+            output.Format(TEXT("%s (Error number %d)"), static_cast<LPCTSTR>(message), error);
         }
         else
         {
@@ -320,7 +324,7 @@ public:
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
             message.AppendFormat(TEXT("Unable to open file %s to retrieve file size. Error was %s."),
-                path, errorMessage);
+                path, static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message);
         }
 
@@ -337,7 +341,7 @@ public:
             Utilities::FormatErrorMessage(error, errorMessage);
             CString message;
             message.AppendFormat(TEXT("Unable to retrieve file size for file %s. Error was %s."),
-                path, errorMessage);
+                path, static_cast<LPCTSTR>(errorMessage));
             throw new CHoboCopyException(message);
         }
 
@@ -394,7 +398,8 @@ public:
         if (nStars > 1)
         {
             CString message;
-            message.AppendFormat(TEXT("The pattern %s is illegal: only a single wildcard is supported."), pattern);
+            message.AppendFormat(TEXT("The pattern %s is illegal: only a single wildcard is supported."),
+                    static_cast<LPCTSTR>(pattern));
             throw new CHoboCopyException(message);
         }
 
@@ -446,12 +451,12 @@ public:
         int separatorLength = CString(separator).GetLength();
 
         CString dateTimeString(szDateTime);
-        pTime->wYear = _ttoi(dateTimeString.Mid(0, 4));
-        pTime->wMonth = _ttoi(dateTimeString.Mid(5, 2));
-        pTime->wDay = _ttoi(dateTimeString.Mid(8, 2));
-        pTime->wHour = _ttoi(dateTimeString.Mid(10 + separatorLength, 2));
-        pTime->wMinute = _ttoi(dateTimeString.Mid(13 + separatorLength, 2));
-        pTime->wSecond = _ttoi(dateTimeString.Mid(16 + separatorLength, 2));
+        pTime->wYear = static_cast<WORD>(_ttoi(dateTimeString.Mid(0, 4)));
+        pTime->wMonth = static_cast<WORD>(_ttoi(dateTimeString.Mid(5, 2)));
+        pTime->wDay = static_cast<WORD>(_ttoi(dateTimeString.Mid(8, 2)));
+        pTime->wHour = static_cast<WORD>(_ttoi(dateTimeString.Mid(10 + separatorLength, 2)));
+        pTime->wMinute = static_cast<WORD>(_ttoi(dateTimeString.Mid(13 + separatorLength, 2)));
+        pTime->wSecond = static_cast<WORD>(_ttoi(dateTimeString.Mid(16 + separatorLength, 2)));
         pTime->wMilliseconds = 0;
     }
     static bool StartsWith(CString& s1, LPCTSTR s2)

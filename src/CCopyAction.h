@@ -86,7 +86,7 @@ public:
         Utilities::CombinePath(_destination, path, destDir);
 		Utilities::CreateDirectory(destDir);
 		CString message;
-		message.AppendFormat(TEXT("Created directory %s"), destDir);
+		message.AppendFormat(TEXT("Created directory %s"), static_cast<LPCTSTR>(destDir));
 		OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_IF_VERBOSE);
     }
 
@@ -108,7 +108,8 @@ public:
                 if ((error == 5 || error == 32) && _skipDenied)
                 {
                     CString message;
-                    message.Format(TEXT("Error %d accessing file %s. Skipping."), error, sourceFile);
+                    message.Format(TEXT("Error %d accessing file %s. Skipping."), error,
+                            static_cast<LPCTSTR>(sourceFile));
                     OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_NORMAL);
                     ++_skipCount;
                 }
@@ -118,14 +119,15 @@ public:
                     Utilities::FormatErrorMessage(error, errorMessage);
                     CString message;
                     message.AppendFormat(TEXT("Copy of file failed with error %s on file %s"),
-                        errorMessage, sourceFile);
+                        static_cast<LPCTSTR>(errorMessage), static_cast<LPCTSTR>(sourceFile));
                     throw new CHoboCopyException(message);
                 }
             }
             else
             {
                 CString message;
-                message.AppendFormat(TEXT("Copied file %s to %s"), sourceFile, destinationFile);
+                message.AppendFormat(TEXT("Copied file %s to %s"), static_cast<LPCTSTR>(sourceFile),
+                        static_cast<LPCTSTR>(destinationFile));
                 OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_IF_VERBOSE);
                 ++_fileCount;
 
@@ -135,10 +137,11 @@ public:
                 }
                 catch (CHoboCopyException* x)
                 {
-                    CString message;
-                    message.AppendFormat(TEXT("Unable to calculate size of file. Size calculations may be incorrect. Message was: %s"),
-                        x->get_Message());
-                    OutputWriter::WriteLine(message, VERBOSITY_THRESHOLD_UNLESS_SILENT);
+                    CString fmsg;
+                    fmsg.AppendFormat(
+                        TEXT("Unable to calculate size of file. Size calculations may be incorrect. Message was: %s"),
+                        static_cast<LPCWSTR>(x->get_Message()));
+                    OutputWriter::WriteLine(fmsg, VERBOSITY_THRESHOLD_UNLESS_SILENT);
                     delete x;
                 }
             }

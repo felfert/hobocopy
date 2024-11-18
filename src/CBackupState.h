@@ -166,20 +166,20 @@ public:
             CComBSTR bstrReason;
             CHECK_HRESULT(pError->get_reason(&bstrReason));
             CString reason(bstrReason);
-            CString message;
-            message.AppendFormat(TEXT("Failed to load state file from %s. Reason: %s."), path, (LPCTSTR) reason);
-            throw new CHoboCopyException(message);
+            CString fmsg;
+            fmsg.AppendFormat(TEXT("Failed to load state file from %s. Reason: %s."), path, (LPCTSTR) reason);
+            throw new CHoboCopyException(fmsg);
         }
 
         _hasLastFullBackup = SelectDateTimeValue(stateDocument, TEXT("/hoboCopyState/@lastFullBackup"), &_lastFullBackup);
 
         if (_hasLastFullBackup)
         {
-            CString message;
+            CString fmsg;
             CString dateTime;
             Utilities::FormatDateTime(&_lastFullBackup, TEXT(" "), false, dateTime);
-            message.AppendFormat(TEXT("Last full backup time read as %s"), dateTime);
-            OutputWriter::WriteLine(message);
+            fmsg.AppendFormat(TEXT("Last full backup time read as %s"), static_cast<LPCTSTR>(dateTime));
+            OutputWriter::WriteLine(fmsg);
         }
         else
         {
@@ -190,11 +190,11 @@ public:
 
         if (_hasLastIncrementalBackup)
         {
-            CString message;
+            CString fmsg;
             CString dateTime;
             Utilities::FormatDateTime(&_lastIncrementalBackup, TEXT(" "), false, dateTime);
-            message.AppendFormat(TEXT("Last incremental backup time read as %s"), dateTime);
-            OutputWriter::WriteLine(message);
+            fmsg.AppendFormat(TEXT("Last incremental backup time read as %s"), static_cast<LPCTSTR>(dateTime));
+            OutputWriter::WriteLine(fmsg);
         }
         else
         {
@@ -231,9 +231,9 @@ public:
 
         if (FAILED(hr))
         {
-            CString message;
-            message.Format(TEXT("loadXML failed with HRESULT 0x%x"), hr);
-            throw new CHoboCopyException(message);
+            CString fmsg;
+            fmsg.Format(TEXT("loadXML failed with HRESULT 0x%x"), hr);
+            throw new CHoboCopyException(fmsg);
         }
         else if (hr == S_FALSE)
         {
@@ -243,9 +243,9 @@ public:
             CComBSTR bstrReason;
             OutputWriter::WriteLine(TEXT("Retrieving reason"));
             CHECK_HRESULT(parseError->get_reason(&bstrReason));
-            CString message;
-            message.Format(TEXT("loadXML failed to parse: %s"), bstrReason);
-            throw new CHoboCopyException(message);
+            CString fmsg;
+            fmsg.Format(TEXT("loadXML failed to parse: %s"), static_cast<LPCWSTR>(bstrReason));
+            throw new CHoboCopyException(fmsg);
         }
 
         if (worked == VARIANT_FALSE)
