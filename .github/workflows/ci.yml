@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-tags: true
       - name: Configure cmake
         run: cmake -B build -G "Visual Studio 16 2019"
       - name: Build and package msi with cmake
