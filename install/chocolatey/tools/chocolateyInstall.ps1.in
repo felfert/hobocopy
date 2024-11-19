@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 $toolsDir   = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
-$msiLocation = Join-Path $toolsDir "$env:ChocolateyPackageTitle-$env:ChocolateyPackageVersion-win64.msi"
+$msiLocation = Join-Path $toolsDir "$env:ChocolateyPackageTitle-@CMAKE_PROJECT_VERSION@-win64.msi"
 
 $packageArgs = @{
   packageName   = 'hobocopy'

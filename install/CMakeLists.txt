@@ -19,5 +19,5 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/msi.xml.in" "${CPACK_WIX_PATCH_FILE}
 # nuspkg for chocolatey
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/chocolatey/${PROJECT_NAME_LC}.nuspec.in"
     "${CMAKE_BINARY_DIR}/install/chocolatey/${PROJECT_NAME_LC}.nuspec" @ONLY)
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/chocolatey/tools"
-        DESTINATION "${CMAKE_BINARY_DIR}/install/chocolatey")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/chocolatey/tools/chocolateyInstall.ps1.in"
+    "${CMAKE_BINARY_DIR}/install/chocolatey/tools/chocolateyInstall.ps1" @ONLY)
