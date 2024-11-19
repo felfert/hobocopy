@@ -22,15 +22,15 @@
             <!-- Include VCREDIST merge module -->
             <Merge Id="VCRedist" SourceFile="@VCREDIST_MERGEMODULE@" DiskId="1" Language="0"/>
         </DirectoryRef>
-        <Feature Id="CreateRegKeys" Title="Create reg keys" AllowAdvertise="no" Display="hidden" Level="1">
-            <ComponentRef Id="ProdInstPathEntry"/>
-        </Feature>
         <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
             <MergeRef Id="VCRedist"/>
         </Feature>
     </CPackWiXFragment>
+    <CPackWiXFragment Id="CM_C_app">
+        <ComponentRef Id="ProdInstPathEntry"/>
+    </CPackWiXFragment>
     <!-- Add binary directory to path -->
-    <CPackWiXFragment Id="CM_CP_@CMAKE_PROJECT_NAME@.exe">
+    <CPackWiXFragment Id="CM_CP_app.HoboCopy.exe">
         <Environment Id="PATH1" Name="PATH" Value="[INSTALL_ROOT]"
             Action="set" Permanent="no" Part="last" System="yes"/>
     </CPackWiXFragment>

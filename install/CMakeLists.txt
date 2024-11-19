@@ -14,6 +14,4 @@ list(POP_FRONT _msm _tmp)
 message(STATUS "MSM used for debuging: ${_tmp}")
 file(TO_NATIVE_PATH "${_tmp}" VCREDIST_MERGEMODULE_DEBUG)
 
-set(CPACK_WIX_PATCH_FILE "${CMAKE_CURRENT_BINARY_DIR}/msi.xml")
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/msi.xml.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/msi.xml" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/msi.xml.in" "${CPACK_WIX_PATCH_FILE}" @ONLY)
