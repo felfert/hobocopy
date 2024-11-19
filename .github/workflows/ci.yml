@@ -32,6 +32,8 @@ jobs:
           echo "$($env:GITHUB_REF)" > build/github-ref
           echo "$($env:GITHUB_SHA)" > build/commithash
           cmake --build build --config RelWithDebInfo --target PACKAGE
+      - name: Build nupkg
+        run: choco pack --outputdirectory build build\install\chocolatey\hobocopy.nuspec
       - name: Save artifacts
         if: always()
         uses: actions/upload-artifact@v4
