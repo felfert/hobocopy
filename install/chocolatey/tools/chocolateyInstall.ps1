@@ -1,0 +1,14 @@
+$ErrorActionPreference = 'Stop'
+
+$toolsDir   = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
+$msiLocation = Join-Path $toolsDir "$env:ChocolateyPackageTitle-$env:ChocolateyPackageVersion-win64.msi"
+
+$packageArgs = @{
+  packageName   = 'hobocopy'
+  fileType      = 'MSI'
+  file          = $msiLocation
+  silentArgs    = "/qn /norestart /l*v `"$($env:TEMP)\$($packageName).$($env:chocolateyPackageVersion).MsiInstall.log`""
+  validExitCodes= @(0, 3010, 1641)
+}
+
+Install-ChocolateyPackage @packageArgs

@@ -14,4 +14,10 @@ list(POP_FRONT _msm _tmp)
 message(STATUS "MSM used for debuging: ${_tmp}")
 file(TO_NATIVE_PATH "${_tmp}" VCREDIST_MERGEMODULE_DEBUG)
 
+string(TOLOWER "${CMAKE_PROJECT_NAME}" PROJECT_NAME_LC)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/msi.xml.in" "${CPACK_WIX_PATCH_FILE}" @ONLY)
+# nuspkg for chocolatey
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/chocolatey/${PROJECT_NAME_LC}.nuspec.in"
+    "${CMAKE_BINARY_DIR}/install/chocolatey/${PROJECT_NAME_LC}.nuspec" @ONLY)
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/chocolatey/tools"
+        DESTINATION "${CMAKE_BINARY_DIR}/install/chocolatey")

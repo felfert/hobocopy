@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>@PROJECT_NAME_LC@</id>
+    <version>@CMAKE_PROJECT_VERSION@</version>
+    <owners>@PROJECT_OWNER@</owners>
+    <title>@CMAKE_PROJECT_NAME@</title>
+    <authors>@PROJECT_OWNER@</authors>
+    <projectUrl>https://github.com/felfert/hobocopy</projectUrl>
+    <!-- There are a number of CDN Services that can be used for hosting the Icon for a package. More information can be found here: https://docs.chocolatey.org/en-us/create/create-packages#package-icon-guidelines -->
+    <!-- Here is an example using Githack -->
+    <!--<iconUrl>http://rawcdn.githack.com/__REPLACE_YOUR_REPO__/master/icons/xtc.png</iconUrl>-->
+    <copyright></copyright>
+    <docsUrl>https://github.com/felfert/hobocopy/README.md</docsUrl>
+    <tags>hobocopy admin</tags><!-- admin tag indicates that we need admin rights -->
+    <summary>@CMAKE_PROJECT_NAME@</summary>
+    <description><![CDATA[@CMAKE_PROJECT_NAME@ uses VSS shadow copies for copying files in use]]></description>
+  </metadata>
+  <files>
+    <file src="..\..\*.msi" target="tools" />
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
