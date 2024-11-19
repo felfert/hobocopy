@@ -27,6 +27,7 @@ class CCopyFilter
 {
 private:
 public:
+    virtual ~CCopyFilter() { }
     virtual bool IsDirectoryMatch(LPCTSTR path) = 0;
     virtual bool IsFileMatch(LPCTSTR path) = 0;
 };
