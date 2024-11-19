@@ -57,9 +57,11 @@ int _tmain(int argc, _TCHAR* argv[])
 {
     //::DebugBreak();
 
-    OutputWriter::SetVerbosityLevel(VERBOSITY_LEVEL_NORMAL);
-    OutputWriter::WriteLine(TEXT("HoboCopy (c) 2011 Wangdera Corporation. hobocopy@wangdera.com"),
-        VERBOSITY_THRESHOLD_UNLESS_SILENT);
+    OutputWriter::SetVerbosityLevel(VERBOSITY_LEVEL_TERSE);
+    CString logo;
+    logo.AppendFormat(TEXT("HoboCopy %s (c) 2011 Wangdera Corporation. hobocopy@wangdera.com"),
+                TEXT(PROJECT_VERSION));
+    OutputWriter::WriteLine(logo, VERBOSITY_THRESHOLD_UNLESS_SILENT);
     OutputWriter::WriteLine(TEXT(""), VERBOSITY_THRESHOLD_UNLESS_SILENT);
 
     GUID snapshotSetId = GUID_NULL;
