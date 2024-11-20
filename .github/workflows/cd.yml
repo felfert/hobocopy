@@ -24,11 +24,15 @@ jobs:
         for msi in *.msi ; do
           sha256sum ${msi} > ${msi}.sha256
         done
+        for npk in *.nupkg ; do
+          sha256sum ${npk} > ${npk}.sha256
+        done
     - name: Release assets
       uses: softprops/action-gh-release@v2
       with:
         files: |
           *.msi
+          *.nupkg
           *.sha256
       env:
         GITHUB_TOKEN: ${{ github.token }}
