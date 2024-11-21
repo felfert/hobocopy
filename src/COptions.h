@@ -168,7 +168,7 @@ public:
 
         options._backupType = VSS_BT_FULL;
         options._clearDestination = false;
-        options._verbosityLevel = VERBOSITY_LEVEL_NORMAL;
+        options._verbosityLevel = VERBOSITY_LEVEL_TERSE;
         options._acceptAll = false;
         options._skipDenied = false;
         options._debug = false;
